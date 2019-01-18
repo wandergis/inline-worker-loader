@@ -1,18 +1,15 @@
 // http://stackoverflow.com/questions/10343913/how-to-create-a-web-worker-from-a-string
 
-var URL = window.URL || window.webkitURL;
+const URL = window.URL || window.webkitURL;
 
 module.exports = function (content, url) {
   try {
     try {
-      var blob;
+      let blob;
 
       try {
         // BlobBuilder = Deprecated, but widely implemented
-        var BlobBuilder = window.BlobBuilder ||
-        window.WebKitBlobBuilder ||
-        window.MozBlobBuilder ||
-        window.MSBlobBuilder;
+        const BlobBuilder = window.BlobBuilder || window.WebKitBlobBuilder || window.MozBlobBuilder || window.MSBlobBuilder;
 
         blob = new BlobBuilder();
 
@@ -23,16 +20,17 @@ module.exports = function (content, url) {
         // The proposed API
         blob = new Blob([content]);
       }
-
-      return new Worker(URL.createObjectURL(blob));
+      return URL.createObjectURL(blob);
+      // return new Worker(URL.createObjectURL(blob));
     } catch (e) {
-      return new Worker('data:application/javascript,' + encodeURIComponent(content));
+      return `data:application/javascript,${encodeURIComponent(content)}`;
+      // return new Worker('data:application/javascript,' + encodeURIComponent(content));
     }
   } catch (e) {
     if (!url) {
       throw Error('Inline worker is not supported');
     }
-
-    return new Worker(url);
+    return url;
+    // return new Worker(url);
   }
 };
